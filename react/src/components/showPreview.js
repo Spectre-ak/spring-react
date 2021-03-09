@@ -12,7 +12,7 @@ class ShowPreview extends React.Component{
 		
 	}
 	componentDidMount(){
-		window.history.pushState('/create-article/',null,'/preview');
+		window.history.pushState('preview',null,'/create-article/preview');
 
 		if(this.props.body!="")
 			document.getElementById("body").innerHTML=this.props.body;
