@@ -79,13 +79,7 @@ class CreateArticle extends React.Component{
 		
 	}
 	componentDidMount(){
-		var aForHref=document.createElement("a");
-		aForHref.href="create-article";
-		aForHref.addEventListener("click",function(ele) {
-			ele.preventDefault();
-		});
-		aForHref.click();
-
+		window.history.pushState('',"",'/create-article/');
 		var windowHeight=window.innerHeight;
 		var taHeight=document.getElementById("bodyID").clientHeight;
 		windowHeight=windowHeight-36;
