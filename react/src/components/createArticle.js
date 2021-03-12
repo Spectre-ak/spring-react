@@ -11,7 +11,7 @@ function makeAJAXrequest(title,body,date){
 	fd.append("body",body);
 	fd.append("date",date);
 	$.ajax({
-		url: 'LikeApost.php',
+		url: 'http://localhost:8080/',
 		type: 'post',
 		data: fd, 
 		contentType: false,
