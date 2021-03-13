@@ -13,6 +13,9 @@ class ShowMenu extends React.Component{
 		this.onOut=this.onOut.bind(this);
 		this.onclciked=this.onclciked.bind(this);
 	}
+	componentDidMount(){
+		window.history.pushState('',"",'/');
+	}
 	render(){
 		return(
 			<div className="container" align="center">
