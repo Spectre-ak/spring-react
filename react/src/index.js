@@ -4,6 +4,24 @@ import './index.css';
 import ShowMenu from './components/showMenu.js'
 import CreateArticle from './components/createArticle.js'
 
+var lastBack=false;
+window.addEventListener('popstate', function(event) {
+  if(lastBack)return;
+    try{
+      document.getElementById("showMenu").click();
+    }
+    catch(exception){
+      try{
+        document.getElementById("returnBack").click();
+      }
+      catch(exception){
+        window.history.back();
+        lastBack=true;
+      }
+    }
+   return;
+   
+}, false);
 
 ReactDOM.render(<ShowMenu/>, document.getElementById('root'));
 
