@@ -62,7 +62,7 @@ class ShowMenu extends React.Component{
 		if(ele["target"]["id"]=="1" || ele["target"]["id"]=="11")
 			ReactDOM.render(<CreateArticle title={this.props.title} body={this.props.body}/>,document.getElementById("root"));
 		else
-			ReactDOM.render(<ShowArticles/>,document.getElementById("root"));
+			ReactDOM.render(<ShowArticles title={this.props.title} body={this.props.body}/>,document.getElementById("root"));
 	}
 }
 export default ShowMenu;
