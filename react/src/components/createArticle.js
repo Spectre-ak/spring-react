@@ -2,68 +2,141 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ShowMenu from './showMenu.js'
 import ShowPreview from './showPreview.js';
-import $ from 'jquery'
+import $ from 'jquery';
+var countOfUploads=0;
+
+window.onbeforeunload = function() {
+	try{
+		if(countOfUploads===0 && (document.getElementById("titleID").value!="" || document.getElementById("bodyID").value!="")){
+		    return "msgDisplay";
+	    }
+	}
+	catch(err){
+
+	}
+	
+}
+
+function Loading() {
+	return(
+		<div className="loaderSmall">
+		</div>
+	)
+}
 
 function makeAJAXrequest(title,body,date){
-
+	if(countOfUploads===5){
+		document.getElementById("modalId").click();
+		document.getElementById("msgDisplay").innerHTML="Too many uploads <br> Your latest article link is at the bottom of the page.";
+		return;
+	}
+	title=title+"";
+	body=body+"";
 	var fd = new FormData();
 	fd.append("title",title);
 	fd.append("body",body);
 	fd.append("date",date);
 	$.ajax({
-		url: 'http://localhost:8080/',
+		url: '/uploadArticle',
 		type: 'post',
 		data: fd, 
 		contentType: false,
 		processData: false,
 		success: function(response){
 			//console.log(response); 
-			if(response!=="error"){
-				document.getElementById("modalId").click();
-				document.getElementById("msgDisplay").innerHTML="Some error occured...";
+			try{
+				ReactDOM.render(<a>Upload</a>,document.getElementById("uploadButton"));
+				if(response["1"]==="error" || response["1"]===undefined){
+					document.getElementById("modalId").click();
+					document.getElementById("msgDisplay").innerHTML="Some error occured...";
+				}
+				else if(response["1"]==="overflow"){
+					document.getElementById("modalId").click();
+					document.getElementById("msgDisplay").innerHTML="Too many uploads <br> Your latest article link is at the bottom of the page.";
+				}
+				else{
+					countOfUploads++;
+					document.getElementById("stop").style.display="block";
+					document.getElementById("stop").addEventListener("click",function(){
+						clearInterval(interval);
+					});
+					document.getElementById("close").addEventListener("click",function(){
+						clearInterval(interval);
+					});
+					document.getElementById("Link").href=response["1"];
+					document.getElementById("Link").innerHTML=response["1"];
+					document.getElementById("linkDiv").style.display="block";
+
+					document.getElementById("modalId").click();
+					var div=document.createElement("div");
+					
+					var p=document.createElement("p");
+					p.innerHTML="Your article url is below";
+
+					var a=document.createElement("a");
+					a.href=response["1"];
+					a.innerHTML=response["1"];
+					a.id="idForLink";
+					var wrapA=document.createElement("p");wrapA.appendChild(a);
+
+					
+					var a2c=document.createElement("a");
+					a2c.id="countdownID";
+
+					div.appendChild(p);
+					div.appendChild(wrapA);
+					//div.appendChild(a2);
+					div.appendChild(a2c);
+
+					document.getElementById("msgDisplay").innerHTML="";
+					document.getElementById("msgDisplay").appendChild(div);
+					
+					
+					var counter = 5;
+					var interval = setInterval(function() {
+					    try{
+					   		document.getElementById("countdownID").innerHTML="Redirecting in "+parseInt(counter)+"s";
+					   		if (counter === 0) {
+						        // Display a login box
+						        clearInterval(interval);
+						        document.getElementById("idForLink").click();
+						    }
+					   		counter--;
+
+					    }
+					   	catch(err){
+					   		counter=counter+1
+					   	}
+					   
+					}, 1000);
+
+				}
 			}
-			else{
-				document.getElementById("modalId").click();
-				var div=document.createElement("div");
-				
-				var p=document.createElement("p");
-				p.innerHTML="Your article url is below";
-
-				var a=document.createElement("a");
-				a.href=response["url"];
-				a.innerHTML=response["url"];
-
-				var wrapA=document.createElement("p");wrapA.appendChild(a);
-
-				
-				var a2c=document.createElement("a");
-				a2c.id="countdownID";
-
-				div.appendChild(p);
-				div.appendChild(wrapA);
-				//div.appendChild(a2);
-				div.appendChild(a2c);
-
-				document.getElementById("msgDisplay").innerHTML="";
-				document.getElementById("msgDisplay").appendChild(div);
-				
-				var counter = 2;
-				var interval = setInterval(function() {
-				    counter++;
-				   	try{
-				   		document.getElementById("countdownID").innerHTML="Redirecting in "+parseInt(counter/2)+"s";
-				   	}
-				   	catch(err){
-				   		counter--;
-				   	}
-				    if (counter === 6) {
-				        // Display a login box
-				        clearInterval(interval);
-				    }
-				}, 500);
+			catch(err){
 
 			}
 		},
+		error: function(XMLHttpRequest, textStatus, errorThrown) { 
+	        try{
+				document.getElementById("modalId").click();
+				document.getElementById("msgDisplay").innerHTML="Some error occured..."; 
+				ReactDOM.render(<a>Upload</a>,document.getElementById("uploadButton"));
+	        }
+	        catch(err){
+
+	        }
+	    },
+		fail: function(xhr, textStatus, errorThrown){
+			try{
+				document.getElementById("modalId").click();
+				document.getElementById("msgDisplay").innerHTML="Some error occured...";
+				ReactDOM.render(<a>Upload</a>,document.getElementById("uploadButton"));
+			}
+			catch(err){
+
+			}
+	        
+	    }
 	});
 }
 
@@ -80,19 +153,36 @@ class CreateArticle extends React.Component{
 	}
 	componentDidMount(){
 		window.history.pushState('',"",'/create-article/');
+		
 		var windowHeight=window.innerHeight;
 		var taHeight=document.getElementById("bodyID").clientHeight;
 		windowHeight=windowHeight-36;
 		windowHeight=parseInt(windowHeight/24);
 		var rows=windowHeight-11;
 		document.getElementById("bodyID").rows=rows;
+		
+		if(this.props.cont!==undefined)
+			countOfUploads=this.props.cont;
+
+		if(this.props.url!==undefined){
+			document.getElementById("Link").href=this.props.url;
+				document.getElementById("Link").innerHTML=this.props.url;
+				document.getElementById("linkDiv").style.display="block";
+			
+		}
+	}
+	componentWillUnmount(){
+		window.history.pushState('',null,'/');
+
 	}
 	render(){
 
 		return(
 			<div className="container"><br/>
+			<form method="post">
 				<i  id="showMenu" className="fa fa-arrow-left fa-lg" aria-hidden="true" onClick={this.showMenu} style={{color: "rgb(15 11 238)",paddingRight:"10px"}}></i>Back
         		<div className="container" align="center">
+					
 					
 					<div className="car13d" id="1" style={{backgroundColor:"#131316",marginTop:"14px",marginBottom:"14px"}} >
 					  <div className="car23d-boxcvdy" id="11"> 
@@ -121,15 +211,20 @@ class CreateArticle extends React.Component{
 				
 
 				<button type="button" className="btn btn-info btn-lg btn-block" style={{color:"white"}} onClick={this.showPreview}>Preview</button>
-				<button type="button" className="btn btn-success btn-lg btn-block" style={{color:"white"}} onClick={this.uploadArticle}>Upload</button>
+				<button type="button" className="btn btn-success btn-lg btn-block" style={{color:"white"}} onClick={this.uploadArticle} id="uploadButton">Upload</button>
 
 				
-				
-			
-			
 				<button type="button" style={{display:"none"}} id="modalId" className="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
 				  
 				</button>
+				
+				<div style={{ textAlign:"center",display:"none"}} id="linkDiv">
+					<br/>
+					<p>Your article link</p>
+				  	<p> <a href="" id="Link">ads</a> </p>
+					<br/> 					
+				</div>
+				
 
 
 				<div style={{backgroundColor:"#131316"}} className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -140,33 +235,35 @@ class CreateArticle extends React.Component{
 				        
 				      </div>
 				      <div className="modal-footer">
-				        <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+				        <button type="button" className="btn btn-secondary" id="close" data-dismiss="modal">Close</button>
+				        <button type="button" className="btn btn-secondary" id="stop" style={{display:"none"}}>Stop</button>
 				      </div>
 				    </div>
 				  </div>
 				</div>
-
+				</form>
 			</div>
 		)
 	}
 
 	showMenu(ele){
-		ReactDOM.render(<ShowMenu title={document.getElementById("titleID").value} body={document.getElementById("bodyID").value}/>,document.getElementById("root"));
+		ReactDOM.render(<ShowMenu cont={countOfUploads} url={document.getElementById("Link").innerHTML} title={document.getElementById("titleID").value} body={document.getElementById("bodyID").value}/>,document.getElementById("root"));
 	}
 
 	showPreview(){
 		var date=new Date();
 		var dateAr=date.toString().split(" ");
 		date=dateAr[0]+" "+dateAr[1]+" "+dateAr[2]+" "+dateAr[3];
-		ReactDOM.render(<ShowPreview date={date} title={document.getElementById("titleID").value} body={document.getElementById("bodyID").value}/>,document.getElementById("root"));
+		ReactDOM.render(<ShowPreview cont={countOfUploads} date={date} url={document.getElementById("Link").innerHTML} title={document.getElementById("titleID").value} body={document.getElementById("bodyID").value}/>,document.getElementById("root"));
 	}
 
 	uploadArticle(){
-
 	var date=new Date();
 	var dateAr=date.toString().split(" ");
 	date=dateAr[0]+" "+dateAr[1]+" "+dateAr[2]+" "+dateAr[3];
 	
+	document.getElementById("stop").style.display="none";
+
 	if(document.getElementById("titleID").value===""){
 		document.getElementById("modalId").click();
 		document.getElementById("msgDisplay").innerHTML="Empty title";
@@ -181,7 +278,8 @@ class CreateArticle extends React.Component{
 	}
 
 	
-	makeAJAXrequest(document.getElementById("titleID"),document.getElementById("bodyID"),date);
+	makeAJAXrequest(document.getElementById("titleID").value,document.getElementById("bodyID").value,date);
+	ReactDOM.render(<Loading/>,document.getElementById("uploadButton"));
 	
 	}
 
