@@ -27,13 +27,15 @@ function Article(props){
 				{props.title}
 			</div>
 			<p>
-				<a href={"http://localhost:8080/article?a="+props.data} target="_blank" rel="noreferrer">See <i className="fa fa-arrow-right" aria-hidden="true"></i></a>
-			
+				<a><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{props.views }&nbsp;&nbsp;</a><span></span>
+				<a href={"https://sharearticles.azurewebsites.net/article?a="+props.data} target="_blank" rel="noreferrer">Read <i className="fa fa-arrow-right" aria-hidden="true"></i></a>
+				
 			</p>
 
 		</div>
 	)
 }
+
 
 //list for storing articles
 var list=[];
@@ -50,7 +52,7 @@ function getArticlesList(){
 			//console.log(response);
 			list=response;
 			for(var i=0;i<list.length;i++){
-				articlesObjects[i]=<Article title={list[i].title} data={list[i].data} key={i}/>
+				articlesObjects[i]=<Article title={list[i].title} data={list[i].data} views={list[i].views} key={i}/>
 			}
 			ReactDOM.render(articlesObjects,document.getElementById("list"));
 		},
