@@ -37,6 +37,12 @@ class ShowMenu extends React.Component{
 				  </div>
 				</div>
 
+				<br/><br/><br/><br/><br/>
+				<div >
+					<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/1200px-Octicons-mark-github.svg.png"
+					width="50px" height="50px" style={{borderRadius:"42px 42px 42px 42px",backgroundColor:"white"}} alt="Avatar"/>
+					<p><a href="https://github.com/Spectre-ak/spring-react">How it works</a></p>
+				</div>
 			</div>
 		)
 	}
@@ -60,9 +66,9 @@ class ShowMenu extends React.Component{
 	}
 	onclciked(ele){
 		if(ele["target"]["id"]=="1" || ele["target"]["id"]=="11")
-			ReactDOM.render(<CreateArticle title={this.props.title} body={this.props.body}/>,document.getElementById("root"));
+			ReactDOM.render(<CreateArticle cont={this.props.cont} url={this.props.url} title={this.props.title} body={this.props.body}/>,document.getElementById("root"));
 		else
-			ReactDOM.render(<ShowArticles title={this.props.title} body={this.props.body}/>,document.getElementById("root"));
+			ReactDOM.render(<ShowArticles cont={this.props.cont} url={this.props.url} title={this.props.title} body={this.props.body}/>,document.getElementById("root"));
 	}
 }
 export default ShowMenu;
