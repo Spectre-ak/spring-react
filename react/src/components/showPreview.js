@@ -43,8 +43,7 @@ class ShowPreview extends React.Component{
 	}
 
 	returnBack(){
-		//document.getElementById("sh").innerHTML=this.props.body;
-		ReactDOM.render(<CreateArticle title={this.props.title} body={this.props.body}/>,document.getElementById("root"));
+		ReactDOM.render(<CreateArticle cont={this.props.cont} url={this.props.url} title={this.props.title} body={this.props.body}/>,document.getElementById("root"));
 	}
 	
 }
