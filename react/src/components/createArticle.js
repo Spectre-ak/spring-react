@@ -28,6 +28,7 @@ function makeAJAXrequest(title,body,date){
 	if(countOfUploads===5){
 		document.getElementById("modalId").click();
 		document.getElementById("msgDisplay").innerHTML="Too many uploads <br> Your latest article link is at the bottom of the page.";
+		ReactDOM.render(<a>Upload</a>,document.getElementById("uploadButton"));
 		return;
 	}
 	title=title+"";
@@ -43,7 +44,6 @@ function makeAJAXrequest(title,body,date){
 		contentType: false,
 		processData: false,
 		success: function(response){
-			//console.log(response); 
 			try{
 				ReactDOM.render(<a>Upload</a>,document.getElementById("uploadButton"));
 				if(response["1"]==="error" || response["1"]===undefined){
@@ -164,7 +164,7 @@ class CreateArticle extends React.Component{
 		if(this.props.cont!==undefined)
 			countOfUploads=this.props.cont;
 
-		if(this.props.url!==undefined){
+		if(this.props.url!==undefined && this.props.url!==""){
 			document.getElementById("Link").href=this.props.url;
 				document.getElementById("Link").innerHTML=this.props.url;
 				document.getElementById("linkDiv").style.display="block";
@@ -221,7 +221,7 @@ class CreateArticle extends React.Component{
 				<div style={{ textAlign:"center",display:"none"}} id="linkDiv">
 					<br/>
 					<p>Your article link</p>
-				  	<p> <a href="" id="Link">ads</a> </p>
+				  	<p> <a href="" id="Link"></a> </p>
 					<br/> 					
 				</div>
 				
