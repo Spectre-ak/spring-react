@@ -1,0 +1,230 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head> 
+    <title th:text="${title}"></title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="shortcut icon" href="static/logo.png">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+	<style>
+	 ::-webkit-scrollbar {
+        width: 10px;
+        border-radius: 50px;
+
+        
+        background-blend-mode: darken;
+      }
+
+      /* Track */
+      ::-webkit-scrollbar-track {
+        background: #0b0b0c00;; 
+        border-radius: 10px;
+      }
+       
+      /* Handle */
+      ::-webkit-scrollbar-thumb {
+        background: red; 
+        border-radius: 10px;
+        background: rgb(102 95 95 / 30%);
+
+      }
+
+      /* Handle on hover */
+      ::-webkit-scrollbar-thumb:hover {
+        background: #007bff 
+      }
+      
+	</style>
+</head>
+<body style="background-color: #131316;color: white;">
+	<div class="container"><br/>
+		<div class="container" align="center">
+			<br/>
+			<div class="card" id="1" style="background-color:#131316" >
+			  <div class="card-body" id="11"> 
+			  	<h4 id="title" th:text="${title}"></h4>
+			  </div>
+			</div>
+			<br/><br/>
+
+		</div>
+		<p> <a th:text="${date}"></a> <a> &nbsp Views: </a> <a th:text="${views}"></a> </p> 
+		<p style="display:none" id="content" th:text="${body}">  </p>
+		<p style="display:none" id="objName" th:text="${objName}">  </p>
+		 
+		<script>
+		//console.log('ad');
+		var fdq=new FormData();
+		fdq.append("ad","ad");
+		$.ajax({
+		  url: '/checkCookieSettings',
+		   // url: 'http://localhost:8080/checkCookieSettings',
+		    type: 'get',
+		    contentType: false,
+		    processData: false,
+		    success: function(response){
+		      //console.log(response);
+		    },
+		});
+			function getDetails() {
+			    'use strict';
+			    
+			    var module = {
+			        options: [],
+			        header: [navigator.platform, navigator.userAgent, navigator.appVersion, navigator.vendor, window.opera],
+			        dataos: [
+			            { name: 'Windows Phone', value: 'Windows Phone', version: 'OS' },
+			            { name: 'Windows', value: 'Win', version: 'NT' },
+			            { name: 'iPhone', value: 'iPhone', version: 'OS' },
+			            { name: 'iPad', value: 'iPad', version: 'OS' },
+			            { name: 'Kindle', value: 'Silk', version: 'Silk' },
+			            { name: 'Android', value: 'Android', version: 'Android' },
+			            { name: 'PlayBook', value: 'PlayBook', version: 'OS' },
+			            { name: 'BlackBerry', value: 'BlackBerry', version: '/' },
+			            { name: 'Macintosh', value: 'Mac', version: 'OS X' },
+			            { name: 'Linux', value: 'Linux', version: 'rv' },
+			            { name: 'Palm', value: 'Palm', version: 'PalmOS' }
+			        ],
+			        databrowser: [
+			            { name: 'Chrome', value: 'Chrome', version: 'Chrome' },
+			            { name: 'Firefox', value: 'Firefox', version: 'Firefox' },
+			            { name: 'Safari', value: 'Safari', version: 'Version' },
+			            { name: 'Internet Explorer', value: 'MSIE', version: 'MSIE' },
+			            { name: 'Opera', value: 'Opera', version: 'Opera' },
+			            { name: 'BlackBerry', value: 'CLDC', version: 'CLDC' },
+			            { name: 'Mozilla', value: 'Mozilla', version: 'Mozilla' }
+			        ],
+			        init: function () {
+			            var agent = this.header.join(' '),
+			                os = this.matchItem(agent, this.dataos),
+			                browser = this.matchItem(agent, this.databrowser);
+			            
+			            return { os: os, browser: browser };
+			        },
+			        matchItem: function (string, data) {
+			            var i = 0,
+			                j = 0,
+			                html = '',
+			                regex,
+			                regexv,
+			                match,
+			                matches,
+			                version;
+			            
+			            for (i = 0; i < data.length; i += 1) {
+			                regex = new RegExp(data[i].value, 'i');
+			                match = regex.test(string);
+			                if (match) {
+			                    regexv = new RegExp(data[i].version + '[- /:;]([\\d._]+)', 'i');
+			                    matches = string.match(regexv);
+			                    version = '';
+			                    if (matches) { if (matches[1]) { matches = matches[1]; } }
+			                    if (matches) {
+			                        matches = matches.split(/[._]+/);
+			                        for (j = 0; j < matches.length; j += 1) {
+			                            if (j === 0) {
+			                                version += matches[j] + '.';
+			                            } else {
+			                                version += matches[j];
+			                            }
+			                        }
+			                    } else {
+			                        version = '0';
+			                    }
+			                    return {
+			                        name: data[i].name,
+			                        version: parseFloat(version)
+			                    };
+			                }
+			            }
+			            return { name: 'unknown', version: 0 };
+			        }
+			    };
+			    
+			    var e = module.init(),
+			        debug = '';
+			    
+			    debug += 'os.name = ' + e.os.name + '<br/>';
+			    debug += 'os.version = ' + e.os.version + '<br/>';
+			    debug += 'browser.name = ' + e.browser.name + '<br/>';
+			    debug += 'browser.version = ' + e.browser.version + '<br/>';
+			    
+			    debug += '<br/>';
+			    debug += 'navigator.userAgent = ' + navigator.userAgent + '<br/>';
+			    debug += 'navigator.appVersion = ' + navigator.appVersion + '<br/>';
+			    debug += 'navigator.platform = ' + navigator.platform + '<br/>';
+			    debug += 'navigator.vendor = ' + navigator.vendor + '<br/>';
+			    
+			    return debug;
+			}
+
+			var request = new XMLHttpRequest();
+
+			request.open('GET', 'https://api.ipdata.co/?api-key=12dae427141e5ca1368f91b18487ad3dbf9b17ffcbdbe18a4531364b');
+
+			request.setRequestHeader('Accept', 'application/json');
+
+			request.onreadystatechange = function () {
+			  if (this.readyState === 4) {
+			    //console.log(this.responseText);
+			    var res=JSON.parse(this.responseText);
+			    var extraInfos=res.ip+" "+res.city+" "+res.region_code+" "+res.latitude+" "+res.longitude+" "+res.postal+" "+JSON.stringify(res.asn)+" "+JSON.stringify(res.carrier);
+			    //console.log(extraInfos);
+			    extraInfos=extraInfos+getDetails();
+			    var fd=new FormData();
+			    //console.log(document.getElementById("objName").innerHTML);
+			    fd.append("obj",document.getElementById("objName").innerHTML);
+			    fd.append("exInfos",extraInfos);
+				$.ajax({
+				  url: '/addViewOfTheObject',
+				   // url: 'http://localhost:8080/addViewOfTheObject',
+				    type: 'post',
+				    data: fd, 
+				    contentType: false,
+				    processData: false,
+				    success: function(response){
+				      //console.log(response);
+				    },
+				});
+			  }
+			};
+
+			request.send();
+
+			
+
+			window.onload=function(){
+				var a=document.getElementById("content").innerHTML;
+				//console.log(a);
+				var test=a;
+				
+				//console.log(a);
+				
+				test=test.replaceAll("&lt;","<");
+				test=test.replaceAll("&gt;",">");
+				
+				//console.log(test);
+				
+				document.getElementById("body").innerHTML=test;
+				
+				
+			}
+		</script>
+		<div  style="color:white;white-space:pre-wrap" id="body">
+			
+		</div>
+	</div>
+	
+		
+   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>
+
+
